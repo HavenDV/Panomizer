@@ -1,9 +1,7 @@
 #pragma once
-#ifndef AI_H
-#define AI_H
 
 #include <QMainWindow>
-#include "ui_ai.h"
+#include "ui_window.h"
 #include "panomizer.h"
 #include <QThread>
 #include <QApplication>
@@ -17,12 +15,12 @@
 
 typedef QSharedPointer<QWidget> QWidgetPtr;
 
-class AI : public QMainWindow {
+class Window : public QMainWindow {
 	Q_OBJECT
 
 public:
-	AI( QWidget *parent = 0 );
-	~AI();
+	Window( QWidget *parent = 0 );
+	~Window();
 
 private:
 	Ui::MainWindow ui;
@@ -81,5 +79,3 @@ signals:
 	void kill();
 	void getFPS();
 };
-
-#endif // AI_H

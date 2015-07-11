@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'ai.ui'
+** Form generated from reading UI file 'window.ui'
 **
 ** Created by: Qt User Interface Compiler version 5.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef UI_AI_H
-#define UI_AI_H
+#ifndef UI_WINDOW_H
+#define UI_WINDOW_H
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
@@ -332,7 +332,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MultiCam", 0));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Panomizer", 0));
         progressBar->setFormat(QApplication::translate("MainWindow", "\320\237\321\200\320\276\320\263\321\200\320\265\321\201\321\201: %p%", 0));
         groupBox->setTitle(QApplication::translate("MainWindow", "\320\244\320\260\320\271\320\273 1", 0));
         pushButton->setText(QApplication::translate("MainWindow", "\320\236\321\202\320\272\321\200\321\213\321\202\321\214", 0));
@@ -418,4 +418,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // UI_AI_H
+#endif // UI_WINDOW_H
