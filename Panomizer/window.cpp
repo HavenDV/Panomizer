@@ -1,30 +1,57 @@
-#include "window.h"
 #include <QFileDialog>
+#include <QDesktopWidget>
+#include <QApplication>
+#include <QSettings>
+#include <QThread>
+#include <QHBoxLayout>
+#include <QMessageBox>
+#include "window.h"
+
+constexpr auto saveText = u8"Сохранить как";
+constexpr auto selectText = u8"Выберите файл";
+constexpr auto selectVideoFilterText = u8"Видео (*.avi *.mp4 *.mkv *.mov)";
+constexpr auto saveVideoFilterText = u8"Видео (*.mkv)";
+constexpr auto defaultSavePathText = "C:/untitled.mkv";
 
 Window::Window( QWidget *parent )
-	: QMainWindow{ parent }, previewWidget{ new QWidget(), &QObject::deleteLater },
-	timer{ this }, numCompletedAudio{ 0 } {
+	: QMainWindow{ parent }, //, previewWidget{ new QWidget(), &QObject::deleteLater },
+	timer{ this }, numCompletedAudio{ 0 },
+	screenWidth{ 0 } {
 	ui.setupUi( this );
+	/*
+	auto newFileButton = new QPushButton{ u8"Добавить новый файл", ui.fileTable };
+	newFileButton->resize( ui.fileTable->width() - 10, 30 );
+	newFileButton->move( 5, ui.fileTable->height() - newFileButton->height() - 5 );
+	connect( newFileButton, &QPushButton::clicked, this, &Window::newFile );
+	*/
 	connect( ui.pushButton, &QPushButton::clicked, this, &Window::pushButton1Clicked );
 	connect( ui.pushButton_2, &QPushButton::clicked, this, &Window::pushButton2Clicked );
 	connect( ui.pushButton_3, &QPushButton::clicked, this, &Window::pushButton3Clicked );
-	connect( ui.pushButton_4, &QPushButton::clicked, this, &Window::compressButton );
+	connect( ui.compressButton, &QPushButton::clicked, this, &Window::compressButton );
 	connect( ui.pushButton_7, &QPushButton::clicked, this, &Window::pushButton4Clicked );
-	connect( ui.pushButton_5, &QPushButton::clicked, this, &Window::saveFile );
-	connect( ui.pushButton_9, &QPushButton::clicked, this, &Window::kill );
-	connect( ui.pushButton_10, &QPushButton::clicked, this, &Window::stopCreating );
+	connect( ui.createButton, &QPushButton::clicked, this, &Window::saveFile );
+	connect( ui.stopButton, &QPushButton::clicked, this, &Window::stopButton );
 	connect( ui.pushButton_11, &QPushButton::clicked, this, &Window::pushButton11Clicked );
 	connect( ui.pushButton_12, &QPushButton::clicked, this, &Window::pushButton12Clicked );
 	connect( ui.pushButton_13, &QPushButton::clicked, this, &Window::pushButton13Clicked );
 	connect( ui.pushButton_14, &QPushButton::clicked, this, &Window::pushButton14Clicked );
 	connect( ui.pushButton_15, &QPushButton::clicked, this, &Window::pushButton15Clicked );
 
+	connect( ui.addFiftyFrameCheckBox, &QCheckBox::stateChanged, this, &Window::addFiftyFrameState );
+	connect( ui.splitValueSlider, &QSlider::sliderReleased, this, &Window::sendSplit );
+	connect( ui.splitValueSlider, &QSlider::sliderPressed, this, &Window::sendSplit );
+	connect( ui.splitValueSlider, &QSlider::actionTriggered, this, &Window::splitState );
+	connect( ui.highQualityRadioButton, &QRadioButton::clicked, this, &Window::qualityState );
+	connect( ui.mediumQualityRadioButton, &QRadioButton::clicked, this, &Window::qualityState );
+	connect( ui.lowQualityRadioButton, &QRadioButton::clicked, this, &Window::qualityState );
+
 	connect( ui.pushButton_16, &QPushButton::clicked, this, &Window::pushButton16Clicked );
 	connect( ui.pushButton_17, &QPushButton::clicked, this, &Window::pushButton17Clicked );
 	connect( ui.pushButton_18, &QPushButton::clicked, this, &Window::pushButton18Clicked );
 	connect( ui.pushButton_19, &QPushButton::clicked, this, &Window::pushButton19Clicked );
 	connect( ui.pushButton_20, &QPushButton::clicked, this, &Window::pushButton20Clicked );
-	connect( ui.pushButton_21, &QPushButton::clicked, this, &Window::preview );
+	connect( ui.previewButton, &QPushButton::clicked, this, &Window::preview );
+	connect( ui.helpButton, &QPushButton::clicked, this, &Window::help );
 
 	connect( ui.lineEdit_7, &QLineEdit::returnPressed, this, &Window::initOffset );
 	connect( ui.lineEdit_2, &QLineEdit::returnPressed, this, &Window::initOffset );
@@ -35,9 +62,10 @@ Window::Window( QWidget *parent )
 
 	ui.progressBar->setVisible( false );
 
-	previewWidget->setFixedWidth( QApplication::desktop()->width() );
-	previewWidget->setFixedHeight( QApplication::desktop()->width() / 4 / 1.333 );
-	previewLabel = new QLabel( previewWidget.data() );
+	//previewWidget->setFixedWidth( QApplication::desktop()->width() );
+	//previewWidget->setFixedHeight( QApplication::desktop()->width() / 5 / 1.333 );
+	//previewLabel = new QLabel{ previewWidget.data() };
+	screenWidth = QApplication::desktop()->width();
 
 	readSettings();
 	addThread();
@@ -51,7 +79,15 @@ Window::Window( QWidget *parent )
 	sound4 = "sound4.temp.mp3";
 }
 
-void Window::removeSound() {
+void	Window::help() {
+	auto helpBox = new QMessageBox{ 
+		{}, u8"Справка", ui.helpButton->toolTip(),
+		QMessageBox::Button::Ok, this 
+	};
+	helpBox->show();
+}
+
+void	Window::removeSound() {
 	QFile::remove( sound1 );
 	QFile::remove( sound2 );
 	QFile::remove( sound3 );
@@ -62,7 +98,7 @@ Window::~Window() {
 	emit stop();
 	emit kill();
 
-	if ( compressName != "" ) {
+	if ( !compressName.isEmpty() ) {
 		QFile::remove( compressName + "temp.avi" );
 	}
 	removeSound();
@@ -138,11 +174,12 @@ void Window::initOffset() {
 
 void Window::addThread() {
 	auto thread = new QThread();
-	auto object = new Panomizer();
+	auto object = new Panomizer( screenWidth );
 	object->moveToThread( thread );
 
 	qRegisterMetaType< QList< QString > >();
 	qRegisterMetaType< QList< int > >();
+	qRegisterMetaType< Quality >();
 	connect( this, &Window::initNames, object, &Panomizer::initNames );
 	connect( this, &Window::initOffsets, object, &Panomizer::initOffsets );
 	connect( object, &Panomizer::finished, thread, &QThread::quit );
@@ -153,9 +190,13 @@ void Window::addThread() {
 	connect( this, &Window::stopCreating, object, &Panomizer::stopCreating );
 
 	connect( this, &Window::getFPS, object, &Panomizer::sendMaxFPS );
-	connect( object, &Panomizer::returnMaxFPS, this, &Window::getSound );
+	connect( this, &Window::setAddFiftyFrame, object, &Panomizer::setAddFiftyFrame );
+	connect( this, &Window::setSplit, object, &Panomizer::setSplit );
+	connect( this, &Window::setQuality, object, &Panomizer::setQuality );
 
-	connect( object, &Panomizer::firstFrame, this, &Window::setImage );
+	connect( object, &Panomizer::returnMaxFPS, this, &Window::getSound );
+	connect( object, &Panomizer::returnFrameCount, this, &Window::setFrameCount );
+	connect( object, &Panomizer::created, this, &Window::afterCreated );
 	connect( object, &Panomizer::percent, this, &Window::setPercent );
 	connect( object, &Panomizer::error, this, &Window::setError );
 	connect( object, &Panomizer::status, this, &Window::setStatus );
@@ -164,13 +205,8 @@ void Window::addThread() {
 	init();
 }
 
-void Window::setImage( QPixmap data ) {
-	previewLabel->setPixmap( data.scaled( previewWidget->size() ) );
-	previewWidget->show();
-}
-
 void Window::pushButton1Clicked() {
-	auto name = QFileDialog::getOpenFileName( this, u8"Выберите файл", ui.lineEdit->text() );
+	auto name = QFileDialog::getOpenFileName( this, selectText, ui.lineEdit->text() );
 	if ( !name.isEmpty() ) {
 		ui.lineEdit->setText( name );
 		init();
@@ -178,21 +214,21 @@ void Window::pushButton1Clicked() {
 }
 
 void Window::pushButton2Clicked() {
-	QString name = QFileDialog::getOpenFileName( this, u8"Выберите файл", ui.lineEdit_4->text() );
+	QString name = QFileDialog::getOpenFileName( this, selectText, ui.lineEdit_4->text() );
 	if ( name != "" )
 		ui.lineEdit_4->setText( name );
 	init();
 }
 
 void Window::pushButton3Clicked() {
-	QString name = QFileDialog::getOpenFileName( this, u8"Выберите файл", ui.lineEdit_6->text() );
+	QString name = QFileDialog::getOpenFileName( this, selectText, ui.lineEdit_6->text() );
 	if ( name != "" )
 		ui.lineEdit_6->setText( name );
 	init();
 }
 
 void Window::pushButton4Clicked() {
-	QString name = QFileDialog::getOpenFileName( this, u8"Выберите файл", ui.lineEdit_10->text() );
+	QString name = QFileDialog::getOpenFileName( this, selectText, ui.lineEdit_10->text() );
 	if ( name != "" )
 		ui.lineEdit_10->setText( name );
 	init();
@@ -249,41 +285,123 @@ void Window::pushButton19Clicked() {
 void Window::pushButton20Clicked() {
 	removeOne( ui.lineEdit_7 );
 }
+/*
+#include <QMap>
+QMap< QString, QString > files;
+
+void	Window::deleteFile() {
+	auto button = static_cast< QPushButton* >( sender() );
+	auto name = button->objectName();
+
+	for ( auto i = 0; i < ui.fileTable->rowCount(); ++i ) {
+		auto widget = ui.fileTable->cellWidget( i, 0 );
+		if ( widget->objectName() == name ) {
+			ui.fileTable->removeRow( i );
+			widget->deleteLater();
+		}
+	}
+	files.remove( name );
+}
+
+void	Window::newFile() {
+	auto filename = QFileDialog::getOpenFileName(
+		this, selectText, 0, selectVideoFilterText
+	);
+	if ( filename.isEmpty() ) {
+		return;
+	}
+	
+	ui.fileTable->setRowCount( files.size() + 1 );
+	ui.fileTable->setColumnCount( 2 );
+	ui.fileTable->setColumnWidth( 0, ui.fileTable->width() - 40 );
+	ui.fileTable->setColumnWidth( 1, 20 );
+
+	auto widget = new QWidget{ ui.fileTable };
+	widget->setObjectName( filename );
+	auto lineEdit = new QLineEdit{ filename, widget };
+	auto layout = new QHBoxLayout{ widget };
+	layout->addWidget( lineEdit );
+	layout->setContentsMargins( 5, 5, 5, 5 );
+	widget->setLayout( layout );
+
+	auto deleteWidget = new QWidget{ ui.fileTable };
+	auto deleteButton = new QPushButton{ "x", deleteWidget };
+	deleteButton->setObjectName( filename );
+	connect( deleteButton, &QPushButton::clicked, this, &Window::deleteFile );
+	auto deleteLayout = new QHBoxLayout{ deleteWidget };
+	deleteLayout->addWidget( deleteButton );
+	//layout->setAlignment( Qt::AlignCenter );
+	deleteLayout->setContentsMargins( 0, 0, 0, 0 );
+	deleteWidget->setLayout( layout );
+	
+	ui.fileTable->setCellWidget( files.size(), 0, widget );
+	ui.fileTable->setCellWidget( files.size(), 1, deleteWidget );
+
+	files[ filename ] = filename;
+}
+*/
+
+auto	Window::getFrameCount() -> int {
+	return get( *ui.frameCountLineEdit );
+}
+
+auto	Window::getSplitValue() -> float {
+	return ui.splitValueSlider->value() / 100.0F;
+}
+
+auto	Window::isHighQuality() -> bool {
+	return ui.highQualityRadioButton->isChecked();
+}
+
+auto	Window::isAutoSelectCodec() -> bool {
+	return ui.autoSelectCodecCheckBox->isChecked();
+}
+
+auto	Window::isAddFiftyFrame() -> bool {
+	return ui.addFiftyFrameCheckBox->isChecked();
+}
+
+auto	Window::isAutoCompress() -> bool {
+	return ui.autoCompessCheckBox->isChecked();
+}
+
+auto	Window::isSoundEnabled() -> bool {
+	return ui.enableSoundCheckBox->isChecked();
+}
+
+// If filename is empty, video create in preview mode.
+void	Window::create( const QString & filename ) {
+	emit createVideo(
+		filename, getFrameCount(), isAutoSelectCodec()
+	);
+}
 
 void Window::saveFile() {
 	numCompletedAudio = 0;
 	removeSound();
-	previewWidget->close();
-	QString name = QFileDialog::getSaveFileName( this, u8"Сохранить как",
-												 "C:/untitled.mkv",
-												 u8"Видео (*.mkv)" );
-	if ( name == "" ) return;
+	auto name = QFileDialog::getSaveFileName( 
+		this, saveText, defaultSavePathText, saveVideoFilterText
+	);
+	if ( name.isEmpty() ) {
+		return;
+	}
+
 	compressName = name;
-	ui.pushButton_5->setEnabled( false );
+	disableAll();
 	setStatus( u8"Файл создается. Пожалуйста, подождите..." );
 
-	if ( ui.checkBox_2->isChecked() )
-		emit createVideo( 
-			name + "temp.avi", 
-			ui.lineEdit_9->text().toInt(), 
-			ui.radioButton_2->isChecked(), 
-			false 
-		);
-	else {
+	if ( isSoundEnabled() ) {
 		emit getFPS();
+	}
+	else {
+		create( name + "temp.avi" );
 	}
 }
 
 void Window::preview() {
-	previewWidget->close();
-
-	ui.pushButton_5->setEnabled( false );
+	disableButtons();
 	setStatus( u8"Предпросмотр..." );
-
-	emit createVideo(
-		"", ui.lineEdit_9->text().toInt(),
-		ui.radioButton_2->isChecked(), true
-	);
+	create( "" );
 }
 
 void Window::getSound( double maxFPS ) {
@@ -293,7 +411,7 @@ void Window::getSound( double maxFPS ) {
 	auto offset3 = ( offset + get( *ui.lineEdit_5 ) ) / maxFPS;
 	auto offset4 = ( offset + get( *ui.lineEdit_11 ) ) / maxFPS;
 
-	auto time = ui.lineEdit_9->text().toInt();
+	auto time = getFrameCount();
 	auto time1 = time / maxFPS;
 	auto time2 = time / maxFPS;
 	auto time3 = time / maxFPS;
@@ -310,49 +428,101 @@ void Window::setPercent( double p ) {
 	ui.progressBar->setValue( p );
 }
 
-void Window::setError( QString e ) {
-	if ( e == "offset" )	e = u8"Смещение превышает длительность файла.";
-	else	if ( e == "input" )		e = u8"Один или несколько файлов не могут быть открыты. Выберите другие.";
-	else	if ( e == "name/codec" ) e = u8"Ошибка с кодеками/проблема с именем. Установите кодеки/выберите другое имя.";
-	ui.error->appendPlainText( e );
+void Window::setFrameCount( double frameCount ) {
+	ui.frameCountLineEdit->setText( QString( "%1" ).arg( frameCount ) );
 }
 
-void Window::setStatus( QString e ) {
-	if ( e != "compresse"&&e != "compressed" )
-		ui.pushButton_5->setEnabled( true );
-	if ( e == "created" ) {
-		if ( ui.checkBox->isChecked() && ui.radioButton_2->isChecked() ) {
-			ui.status->setText( u8"Видео создано. Происходит сжатие. Пожалуйста, подождите..." );
-			compress( compressName + "temp.avi", compressName + "temp.mkv" );
-			//convert(compressName+"temp.avi", compressName+"temp1.avi");
-		}
-		else {
-			convert( compressName + "temp.avi", compressName );
-		}
+void Window::setError( QString text ) {
+	if ( text == "offset" ) {
+		text = u8"Смещение превышает длительность файла.";
 	}
-	else	if ( e == "stopped" ) {
-		ui.status->setText( u8"Отменено." );
-		removeSound();
-		setPercent( 0.0 );
+	else if ( text == "input" ) {
+		text = u8"Один или несколько файлов не могут быть открыты. Выберите другие.";
 	}
-	else						ui.status->setText( e );
+	else if ( text == "name/codec" ) {
+		text = u8"Ошибка с кодеками/проблема с именем. Установите кодеки/выберите другое имя.";
+	}
+	ui.error->appendPlainText( text );
+
+	reset();
+}
+
+void Window::setStatus( const QString & text ) {
+	ui.statusLabel->setText( text );
+}
+
+void Window::sendSplit() {
+	emit setSplit( getSplitValue() );
+}
+
+void	Window::afterCreated() {
+	ui.compressButton->setEnabled( true );
+	if ( isAutoCompress() && isHighQuality() ) {
+		setStatus( u8"Видео создано. Происходит сжатие. Пожалуйста, подождите..." );
+		compress( compressName + "temp.avi", compressName + "temp.mkv" );
+	}
+	else {
+		convert( compressName + "temp.avi", compressName );
+	}
 }
 
 void Window::compressButton() {
-	auto openFileName = QFileDialog::getOpenFileName( 
-		this, u8"Выберите файл для сжатия", 0, 
-		u8"Видео (*.avi *.mp4 *.mkv *.mov)" 
+	auto && openFileName = QFileDialog::getOpenFileName( 
+		this, selectText, 0, selectVideoFilterText
 	);
-	if ( openFileName != "" ) {
-		auto saveFileName = QFileDialog::getSaveFileName( 
-			this, u8"Сохранить как", "C:/untitled.mkv", 
-			u8"Видео (*.avi *.mp4 *.mkv *.mov)" 
+	if ( !openFileName.isEmpty() ) {
+		auto && saveFileName = QFileDialog::getSaveFileName( 
+			this, saveText, defaultSavePathText, selectVideoFilterText
 		);
 		compress( openFileName, saveFileName );
 	}
 }
 
-void Window::compress( QString in, QString out ) {
+void	Window::enableButtons() {
+	ui.createButton->setEnabled( true );
+	ui.previewButton->setEnabled( true );
+	ui.compressButton->setEnabled( true );
+}
+
+void	Window::disableButtons() {
+	ui.createButton->setEnabled( false );
+	ui.previewButton->setEnabled( false );
+	ui.compressButton->setEnabled( false );
+}
+
+void	Window::enableAll() {
+	ui.settingGroupBox->setEnabled( true );
+	enableButtons();
+}
+
+void	Window::disableAll() {
+	ui.settingGroupBox->setEnabled( false );
+}
+
+void	Window::removeTempFiles() {
+	if ( !compressName.isEmpty() ) {
+		QFile::remove( compressName + "temp.avi" );
+		QFile::remove( compressName + "temp.mkv" );
+	}
+	removeSound();
+}
+
+void	Window::reset() {
+	emit kill();
+	emit stopCreating();
+	removeTempFiles();
+	enableAll();
+	setPercent( 0.0 );
+	setStatus( "" );
+}
+
+void	Window::stopButton() {
+	reset();
+	setPercent( 0.0 );
+	setStatus( u8"Отменено." );
+}
+
+void	Window::compress( QString in, QString out ) {
 	if ( in.isEmpty() || out.isEmpty() ) {
 		return;
 	}
@@ -368,18 +538,12 @@ void Window::compress( QString in, QString out ) {
 
 void Window::compressState( QProcess::ProcessState s ) {
 	if ( s == 0 ) {
-		ui.pushButton_4->setEnabled( true );
-		ui.pushButton_4->setText( u8"Открыть" );
-		ui.cstatus->setText( u8"Сжатие завершено." );
-		setPercent( 100.0 );
-		//removeSound();
-		QFile::remove( compressName + "temp.avi" );
+		enableButtons();
+		setPercent( 99.0 );
 		convert( compressName + "temp.mkv", compressName );
-		//setStatus( u8"Видео создано." );
 	}
 	else if ( s == 2 ) {
-		ui.pushButton_4->setEnabled( false );
-		ui.pushButton_4->setText( u8"Сжатие..." );
+		disableButtons();
 		setPercent( 99.0 );
 		setStatus( u8"Сжатие. Пожалуйста, подождите..." );
 	}
@@ -387,11 +551,9 @@ void Window::compressState( QProcess::ProcessState s ) {
 
 void Window::convertState( QProcess::ProcessState s ) {
 	if ( s == 0 ) {
+		reset();
 		setStatus( u8"Видео создано." );
 		setPercent( 100.0 );
-		QFile::remove( compressName + "temp.avi" );
-		QFile::remove( compressName + "temp.mkv" );
-		removeSound();
 	}
 	else if ( s == 2 ) {
 		setStatus( u8"Конвертация..." );
@@ -399,27 +561,43 @@ void Window::convertState( QProcess::ProcessState s ) {
 	}
 }
 
-void Window::audioState( QProcess::ProcessState s ) {
+void	Window::audioState( QProcess::ProcessState s ) {
 	if ( s == 0 ) {
 		++numCompletedAudio;
 	}
 
 	if ( numCompletedAudio > 3 ) {
-		emit createVideo(
-			compressName + "temp.avi", ui.lineEdit_9->text().toInt(),
-			ui.radioButton_2->isChecked(),
-			false
-		);
+		create( compressName + "temp.avi" );
 	}
 }
 
-void Window::animate() {
-	ui.status->setText( animateString( ui.status->text() ) );
-	ui.cstatus->setText( animateString( ui.cstatus->text() ) );
+void Window::addFiftyFrameState( int state ) {
+	emit setAddFiftyFrame( state == Qt::CheckState::Checked ? true : false );
 }
 
-QString Window::animateString( QString s ) {
-	if ( s.size() < 3 ) return{};
+void Window::splitState( int state ) {
+	if ( state == QAbstractSlider::SliderMove ) {
+		return;
+	}
+
+	sendSplit();
+}
+
+void Window::qualityState( bool checked ) {
+	auto isMedium = ui.mediumQualityRadioButton->isChecked();
+	emit setQuality( isHighQuality() ? Quality::High : isMedium ? Quality::Medium : Quality::Low );
+}
+
+void Window::animate() {
+	ui.statusLabel->setText( animateString( ui.statusLabel->text() ) );
+}
+
+//swap "xxx..." to "xxx   ", "xxx   " to "xxx.  ", "xxx.   " to "xxx.. "
+auto	Window::animateString( QString s ) -> QString {
+	if ( s.size() < 3 ) {
+		return s;
+	}
+
 	if ( s.at( s.size() - 3 ) == '.' ) {
 		if ( s.at( s.size() - 2 ) == '.' ) {
 			if ( s.at( s.size() - 1 ) == '.' ) {
@@ -427,23 +605,29 @@ QString Window::animateString( QString s ) {
 				s.replace( s.size() - 2, 1, ' ' );
 				s.replace( s.size() - 3, 1, ' ' );
 			}
-			else if ( s.at( s.size() - 1 ) == ' ' ) s.replace( s.size() - 1, 1, '.' );
+			else if ( s.at( s.size() - 1 ) == ' ' ) {
+				s.replace( s.size() - 1, 1, '.' );
+			}
 		}
-		else if ( s.at( s.size() - 2 ) == ' ' ) s.replace( s.size() - 2, 1, '.' );
+		else if ( s.at( s.size() - 2 ) == ' ' ) {
+			s.replace( s.size() - 2, 1, '.' );
+		}
 	}
-	else if ( s.at( s.size() - 3 ) == ' ' ) s.replace( s.size() - 3, 1, '.' );
+	else if ( s.at( s.size() - 3 ) == ' ' ) {
+		s.replace( s.size() - 3, 1, '.' );
+	}
 	return s;
 }
 
-void Window::convert( QString in, QString out ) {
+void	Window::convert( QString in, QString out ) {
 	if ( in.isEmpty() || out.isEmpty() ) {
 		return;
 	}
 
-	QString program = "mkvmerge.exe";
+	auto program = "mkvmerge.exe";
 	QStringList arguments;
 	arguments << "-o" << out << in;
-	if ( !( ui.checkBox_2->isChecked() ) ) {
+	if ( isSoundEnabled() ) {
 		arguments << sound1 << sound2 << sound3 << sound4;
 	}
 
@@ -453,20 +637,22 @@ void Window::convert( QString in, QString out ) {
 	process->start( program, arguments );
 }
 
-QString Window::getAudio( QString in, QString out, double offset, double time ) {
+auto	Window::getAudio( QString in, QString out, double offset, double time ) -> QString {
 	if ( in.isEmpty() || out.isEmpty() ) {
 		return{};
 	}
 
-	QString program = "ffmpeg.exe";
+	auto program = "ffmpeg.exe";
 	QStringList arguments;
 	arguments << "-i" << in;
 	arguments << "-vn" << "-ar" << "44100" << "-ac" << "2" << "-ab" << "192" << "-f" << "mp3";
 	arguments << "-ss" << QString( "%1" ).arg( offset );
-	if ( time > 0.1 ) arguments << "-t" << QString( "%1" ).arg( time );
+	if ( time > 0.1 ) {
+		arguments << "-t" << QString( "%1" ).arg( time );
+	}
 	arguments << out;
 
-	auto process = new QProcess( this );
+	auto process = new QProcess{ this };
 	connect( this, &Window::kill, process, &QProcess::kill );
 	connect( process, &QProcess::stateChanged, this, &Window::audioState );
 	process->start( program, arguments );

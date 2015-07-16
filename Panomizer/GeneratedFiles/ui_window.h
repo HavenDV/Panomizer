@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -23,6 +24,7 @@
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -62,38 +64,45 @@ public:
     QPushButton *pushButton_19;
     QLabel *label_4;
     QLineEdit *lineEdit_7;
-    QPushButton *pushButton_6;
-    QGroupBox *groupBox_5;
-    QLabel *label_6;
-    QRadioButton *radioButton_2;
-    QRadioButton *radioButton;
-    QLabel *label_10;
-    QLineEdit *lineEdit_9;
-    QPushButton *pushButton_5;
-    QCheckBox *checkBox;
-    QPushButton *pushButton_10;
-    QCheckBox *checkBox_2;
-    QPushButton *pushButton_21;
+    QPushButton *helpButton;
     QPushButton *pushButton_8;
-    QGroupBox *groupBox_6;
-    QPushButton *pushButton_4;
-    QPushButton *pushButton_9;
-    QLabel *cstatus;
-    QLabel *status;
+    QLabel *statusLabel;
     QPlainTextEdit *error;
     QPushButton *pushButton_15;
     QPushButton *pushButton_20;
+    QGroupBox *settingGroupBox;
+    QCheckBox *enableSoundCheckBox;
+    QCheckBox *autoCompessCheckBox;
+    QCheckBox *autoSelectCodecCheckBox;
+    QCheckBox *addFiftyFrameCheckBox;
+    QLabel *splitValueTextMax;
+    QSlider *splitValueSlider;
+    QLabel *splitValueTextMin;
+    QLabel *splitValueLabel;
+    QLabel *qualityLabel;
+    QRadioButton *lowQualityRadioButton;
+    QRadioButton *highQualityRadioButton;
+    QRadioButton *mediumQualityRadioButton;
+    QPushButton *previewButton;
+    QLineEdit *frameCountLineEdit;
+    QLabel *frameCountLabel;
+    QPushButton *createButton;
+    QPushButton *compressButton;
+    QLabel *methodLabel;
+    QFrame *frame;
+    QRadioButton *methodMeanRadioButton;
+    QPushButton *stopButton;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(774, 577);
+        MainWindow->resize(779, 553);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         progressBar = new QProgressBar(centralWidget);
         progressBar->setObjectName(QStringLiteral("progressBar"));
-        progressBar->setGeometry(QRect(10, 540, 701, 23));
+        progressBar->setGeometry(QRect(10, 520, 681, 23));
         progressBar->setValue(0);
         progressBar->setTextVisible(true);
         groupBox = new QGroupBox(centralWidget);
@@ -219,110 +228,145 @@ public:
         pushButton_19->setFont(font1);
         label_4 = new QLabel(centralWidget);
         label_4->setObjectName(QStringLiteral("label_4"));
-        label_4->setGeometry(QRect(20, 410, 231, 20));
+        label_4->setGeometry(QRect(20, 410, 151, 20));
         label_4->setFont(font1);
         lineEdit_7 = new QLineEdit(centralWidget);
         lineEdit_7->setObjectName(QStringLiteral("lineEdit_7"));
-        lineEdit_7->setGeometry(QRect(130, 410, 51, 20));
+        lineEdit_7->setGeometry(QRect(200, 410, 51, 20));
         lineEdit_7->setFont(font1);
-        pushButton_6 = new QPushButton(centralWidget);
-        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
-        pushButton_6->setEnabled(false);
-        pushButton_6->setGeometry(QRect(730, 540, 31, 23));
+        helpButton = new QPushButton(centralWidget);
+        helpButton->setObjectName(QStringLiteral("helpButton"));
+        helpButton->setGeometry(QRect(740, 520, 31, 23));
         QFont font2;
         font2.setPointSize(10);
         font2.setBold(true);
         font2.setWeight(75);
-        pushButton_6->setFont(font2);
-        groupBox_5 = new QGroupBox(centralWidget);
-        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
-        groupBox_5->setGeometry(QRect(360, 310, 201, 171));
-        groupBox_5->setFont(font);
-        label_6 = new QLabel(groupBox_5);
-        label_6->setObjectName(QStringLiteral("label_6"));
-        label_6->setGeometry(QRect(10, 60, 61, 20));
-        label_6->setFont(font1);
-        radioButton_2 = new QRadioButton(groupBox_5);
-        radioButton_2->setObjectName(QStringLiteral("radioButton_2"));
-        radioButton_2->setGeometry(QRect(130, 60, 61, 16));
-        radioButton_2->setFont(font1);
-        radioButton_2->setChecked(true);
-        radioButton = new QRadioButton(groupBox_5);
-        radioButton->setObjectName(QStringLiteral("radioButton"));
-        radioButton->setGeometry(QRect(70, 60, 61, 17));
-        radioButton->setFont(font1);
-        label_10 = new QLabel(groupBox_5);
-        label_10->setObjectName(QStringLiteral("label_10"));
-        label_10->setGeometry(QRect(10, 30, 191, 16));
-        label_10->setFont(font1);
-        lineEdit_9 = new QLineEdit(groupBox_5);
-        lineEdit_9->setObjectName(QStringLiteral("lineEdit_9"));
-        lineEdit_9->setGeometry(QRect(90, 30, 81, 20));
-        lineEdit_9->setFont(font1);
-        pushButton_5 = new QPushButton(groupBox_5);
-        pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
-        pushButton_5->setGeometry(QRect(10, 140, 141, 23));
-        pushButton_5->setFont(font1);
-        checkBox = new QCheckBox(groupBox_5);
-        checkBox->setObjectName(QStringLiteral("checkBox"));
-        checkBox->setGeometry(QRect(20, 80, 71, 20));
-        checkBox->setFont(font1);
-        checkBox->setLayoutDirection(Qt::RightToLeft);
-        checkBox->setCheckable(true);
-        checkBox->setTristate(false);
-        pushButton_10 = new QPushButton(groupBox_5);
-        pushButton_10->setObjectName(QStringLiteral("pushButton_10"));
-        pushButton_10->setGeometry(QRect(160, 140, 31, 24));
-        pushButton_10->setFont(font1);
-        checkBox_2 = new QCheckBox(groupBox_5);
-        checkBox_2->setObjectName(QStringLiteral("checkBox_2"));
-        checkBox_2->setGeometry(QRect(100, 80, 91, 20));
-        checkBox_2->setFont(font1);
-        checkBox_2->setLayoutDirection(Qt::RightToLeft);
-        pushButton_21 = new QPushButton(groupBox_5);
-        pushButton_21->setObjectName(QStringLiteral("pushButton_21"));
-        pushButton_21->setGeometry(QRect(10, 110, 181, 23));
-        pushButton_21->setFont(font1);
+        helpButton->setFont(font2);
         pushButton_8 = new QPushButton(centralWidget);
         pushButton_8->setObjectName(QStringLiteral("pushButton_8"));
-        pushButton_8->setGeometry(QRect(20, 440, 161, 23));
+        pushButton_8->setGeometry(QRect(20, 442, 311, 21));
         pushButton_8->setFont(font1);
-        groupBox_6 = new QGroupBox(centralWidget);
-        groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
-        groupBox_6->setGeometry(QRect(560, 310, 201, 151));
-        groupBox_6->setFont(font);
-        pushButton_4 = new QPushButton(groupBox_6);
-        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
-        pushButton_4->setGeometry(QRect(20, 30, 141, 24));
-        pushButton_4->setFont(font1);
-        pushButton_9 = new QPushButton(groupBox_6);
-        pushButton_9->setObjectName(QStringLiteral("pushButton_9"));
-        pushButton_9->setGeometry(QRect(170, 30, 21, 24));
-        pushButton_9->setFont(font1);
-        cstatus = new QLabel(groupBox_6);
-        cstatus->setObjectName(QStringLiteral("cstatus"));
-        cstatus->setGeometry(QRect(20, 60, 161, 71));
-        cstatus->setFont(font);
-        cstatus->setAlignment(Qt::AlignCenter);
-        cstatus->setWordWrap(true);
-        status = new QLabel(centralWidget);
-        status->setObjectName(QStringLiteral("status"));
-        status->setGeometry(QRect(10, 500, 751, 31));
-        status->setFont(font);
-        status->setAlignment(Qt::AlignCenter);
-        status->setWordWrap(true);
+        statusLabel = new QLabel(centralWidget);
+        statusLabel->setObjectName(QStringLiteral("statusLabel"));
+        statusLabel->setGeometry(QRect(20, 480, 741, 31));
+        statusLabel->setFont(font);
+        statusLabel->setAlignment(Qt::AlignCenter);
+        statusLabel->setWordWrap(true);
         error = new QPlainTextEdit(centralWidget);
         error->setObjectName(QStringLiteral("error"));
-        error->setGeometry(QRect(350, 20, 411, 281));
+        error->setGeometry(QRect(350, 20, 411, 81));
         error->setReadOnly(true);
         pushButton_15 = new QPushButton(centralWidget);
         pushButton_15->setObjectName(QStringLiteral("pushButton_15"));
-        pushButton_15->setGeometry(QRect(180, 410, 21, 24));
+        pushButton_15->setGeometry(QRect(250, 410, 21, 24));
         pushButton_15->setFont(font1);
         pushButton_20 = new QPushButton(centralWidget);
         pushButton_20->setObjectName(QStringLiteral("pushButton_20"));
-        pushButton_20->setGeometry(QRect(110, 410, 21, 24));
+        pushButton_20->setGeometry(QRect(180, 410, 21, 24));
         pushButton_20->setFont(font1);
+        settingGroupBox = new QGroupBox(centralWidget);
+        settingGroupBox->setObjectName(QStringLiteral("settingGroupBox"));
+        settingGroupBox->setEnabled(true);
+        settingGroupBox->setGeometry(QRect(350, 110, 411, 351));
+        settingGroupBox->setFont(font);
+        enableSoundCheckBox = new QCheckBox(settingGroupBox);
+        enableSoundCheckBox->setObjectName(QStringLiteral("enableSoundCheckBox"));
+        enableSoundCheckBox->setGeometry(QRect(10, 30, 171, 20));
+        enableSoundCheckBox->setFont(font1);
+        enableSoundCheckBox->setLayoutDirection(Qt::RightToLeft);
+        enableSoundCheckBox->setChecked(true);
+        autoCompessCheckBox = new QCheckBox(settingGroupBox);
+        autoCompessCheckBox->setObjectName(QStringLiteral("autoCompessCheckBox"));
+        autoCompessCheckBox->setGeometry(QRect(10, 50, 171, 20));
+        autoCompessCheckBox->setFont(font1);
+        autoCompessCheckBox->setLayoutDirection(Qt::RightToLeft);
+        autoCompessCheckBox->setCheckable(true);
+        autoCompessCheckBox->setTristate(false);
+        autoSelectCodecCheckBox = new QCheckBox(settingGroupBox);
+        autoSelectCodecCheckBox->setObjectName(QStringLiteral("autoSelectCodecCheckBox"));
+        autoSelectCodecCheckBox->setGeometry(QRect(200, 30, 191, 20));
+        autoSelectCodecCheckBox->setFont(font1);
+        autoSelectCodecCheckBox->setLayoutDirection(Qt::RightToLeft);
+        autoSelectCodecCheckBox->setChecked(true);
+        addFiftyFrameCheckBox = new QCheckBox(settingGroupBox);
+        addFiftyFrameCheckBox->setObjectName(QStringLiteral("addFiftyFrameCheckBox"));
+        addFiftyFrameCheckBox->setGeometry(QRect(200, 50, 191, 20));
+        addFiftyFrameCheckBox->setFont(font1);
+        addFiftyFrameCheckBox->setLayoutDirection(Qt::RightToLeft);
+        addFiftyFrameCheckBox->setChecked(true);
+        splitValueTextMax = new QLabel(settingGroupBox);
+        splitValueTextMax->setObjectName(QStringLiteral("splitValueTextMax"));
+        splitValueTextMax->setGeometry(QRect(360, 70, 21, 20));
+        splitValueTextMax->setFont(font1);
+        splitValueSlider = new QSlider(settingGroupBox);
+        splitValueSlider->setObjectName(QStringLiteral("splitValueSlider"));
+        splitValueSlider->setGeometry(QRect(270, 90, 101, 22));
+        splitValueSlider->setMaximum(50);
+        splitValueSlider->setSingleStep(5);
+        splitValueSlider->setOrientation(Qt::Horizontal);
+        splitValueTextMin = new QLabel(settingGroupBox);
+        splitValueTextMin->setObjectName(QStringLiteral("splitValueTextMin"));
+        splitValueTextMin->setGeometry(QRect(260, 70, 21, 20));
+        splitValueTextMin->setFont(font1);
+        splitValueLabel = new QLabel(settingGroupBox);
+        splitValueLabel->setObjectName(QStringLiteral("splitValueLabel"));
+        splitValueLabel->setGeometry(QRect(30, 90, 231, 20));
+        splitValueLabel->setFont(font1);
+        qualityLabel = new QLabel(settingGroupBox);
+        qualityLabel->setObjectName(QStringLiteral("qualityLabel"));
+        qualityLabel->setGeometry(QRect(20, 200, 81, 20));
+        qualityLabel->setFont(font1);
+        lowQualityRadioButton = new QRadioButton(settingGroupBox);
+        lowQualityRadioButton->setObjectName(QStringLiteral("lowQualityRadioButton"));
+        lowQualityRadioButton->setGeometry(QRect(130, 200, 61, 17));
+        lowQualityRadioButton->setFont(font1);
+        highQualityRadioButton = new QRadioButton(settingGroupBox);
+        highQualityRadioButton->setObjectName(QStringLiteral("highQualityRadioButton"));
+        highQualityRadioButton->setGeometry(QRect(300, 200, 61, 16));
+        highQualityRadioButton->setFont(font1);
+        highQualityRadioButton->setChecked(true);
+        mediumQualityRadioButton = new QRadioButton(settingGroupBox);
+        mediumQualityRadioButton->setObjectName(QStringLiteral("mediumQualityRadioButton"));
+        mediumQualityRadioButton->setGeometry(QRect(210, 200, 71, 17));
+        mediumQualityRadioButton->setFont(font1);
+        previewButton = new QPushButton(settingGroupBox);
+        previewButton->setObjectName(QStringLiteral("previewButton"));
+        previewButton->setGeometry(QRect(20, 270, 371, 31));
+        previewButton->setFont(font1);
+        frameCountLineEdit = new QLineEdit(settingGroupBox);
+        frameCountLineEdit->setObjectName(QStringLiteral("frameCountLineEdit"));
+        frameCountLineEdit->setGeometry(QRect(170, 230, 81, 20));
+        frameCountLineEdit->setFont(font1);
+        frameCountLabel = new QLabel(settingGroupBox);
+        frameCountLabel->setObjectName(QStringLiteral("frameCountLabel"));
+        frameCountLabel->setGeometry(QRect(20, 230, 131, 20));
+        frameCountLabel->setFont(font1);
+        createButton = new QPushButton(settingGroupBox);
+        createButton->setObjectName(QStringLiteral("createButton"));
+        createButton->setGeometry(QRect(20, 310, 181, 31));
+        createButton->setFont(font1);
+        compressButton = new QPushButton(settingGroupBox);
+        compressButton->setObjectName(QStringLiteral("compressButton"));
+        compressButton->setGeometry(QRect(210, 310, 181, 31));
+        compressButton->setFont(font1);
+        methodLabel = new QLabel(settingGroupBox);
+        methodLabel->setObjectName(QStringLiteral("methodLabel"));
+        methodLabel->setGeometry(QRect(30, 120, 141, 20));
+        methodLabel->setFont(font1);
+        frame = new QFrame(settingGroupBox);
+        frame->setObjectName(QStringLiteral("frame"));
+        frame->setGeometry(QRect(170, 120, 211, 71));
+        frame->setFrameShape(QFrame::StyledPanel);
+        frame->setFrameShadow(QFrame::Raised);
+        methodMeanRadioButton = new QRadioButton(frame);
+        methodMeanRadioButton->setObjectName(QStringLiteral("methodMeanRadioButton"));
+        methodMeanRadioButton->setGeometry(QRect(20, 10, 181, 17));
+        methodMeanRadioButton->setFont(font1);
+        methodMeanRadioButton->setChecked(true);
+        stopButton = new QPushButton(centralWidget);
+        stopButton->setObjectName(QStringLiteral("stopButton"));
+        stopButton->setGeometry(QRect(700, 520, 24, 24));
+        stopButton->setFont(font1);
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -358,56 +402,70 @@ public:
         lineEdit_11->setText(QApplication::translate("MainWindow", "0", 0));
         pushButton_14->setText(QApplication::translate("MainWindow", "+", 0));
         pushButton_19->setText(QApplication::translate("MainWindow", "-", 0));
-        label_4->setText(QApplication::translate("MainWindow", "\320\236\320\261\321\211\320\265\320\265 \321\201\320\274\320\265\321\211\320\265\320\275\320\270\320\265                                      \320\272\320\260\320\264\321\200", 0));
+        label_4->setText(QApplication::translate("MainWindow", "\320\236\320\261\321\211\320\265\320\265 \321\201\320\274\320\265\321\211\320\265\320\275\320\270\320\265(\320\272\320\260\320\264\321\200\321\213):", 0));
         lineEdit_7->setText(QApplication::translate("MainWindow", "0", 0));
 #ifndef QT_NO_TOOLTIP
-        pushButton_6->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>\320\224\320\273\321\217 \320\275\320\260\321\207\320\260\320\273\320\260 \320\275\321\203\320\266\320\275\320\276 \321\203\320\272\320\260\320\267\320\260\321\202\321\214 4 \320\270\321\201\321\205\320\276\320\264\320\275\321\213\321\205 \321\204\320\260\320\271\320\273\320\260. </p><p>\320\244\320\260\320\271\320\273 1 \320\264\320\273\321\217 \320\273\320\265\320\262\320\276\320\263\320\276 \320\262\320\270\320\264\320\265\320\276, \320\244\320\260\320\271\320\273 2 \320\264\320\273\321\217 \321\206\320\265\320\275\321\202\321\200\320\260\320\273\321\214\320\275\320\276\320\263\320\276, \320\244\320\260\320\271\320\273 3 \320\264\320\273\321\217 \320\277\321\200\320\260\320\262\320\276\320\263\320\276 \320\270 \320\244\320\260\320\271\320\273 4 \320\264\320\273\321\217 \320\267\320\260\320\264\320\275\320\265\320\263\320\276. </p><p>\320\224\320\260\320\273\320\265\320\265 \320\274\320\276\320\266\320\275\320\276 \321\203\320\272\320\260\320\267\320\260\321\202\321\214 \321\201\320\274"
+        helpButton->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>\320\224\320\273\321\217 \320\275\320\260\321\207\320\260\320\273\320\260 \320\275\321\203\320\266\320\275\320\276 \321\203\320\272\320\260\320\267\320\260\321\202\321\214 4 \320\270\321\201\321\205\320\276\320\264\320\275\321\213\321\205 \321\204\320\260\320\271\320\273\320\260. </p><p>\320\244\320\260\320\271\320\273 1 \320\264\320\273\321\217 \320\273\320\265\320\262\320\276\320\263\320\276 \320\262\320\270\320\264\320\265\320\276, \320\244\320\260\320\271\320\273 2 \320\264\320\273\321\217 \321\206\320\265\320\275\321\202\321\200\320\260\320\273\321\214\320\275\320\276\320\263\320\276, \320\244\320\260\320\271\320\273 3 \320\264\320\273\321\217 \320\277\321\200\320\260\320\262\320\276\320\263\320\276 \320\270 \320\244\320\260\320\271\320\273 4 \320\264\320\273\321\217 \320\267\320\260\320\264\320\275\320\265\320\263\320\276. </p><p>\320\224\320\260\320\273\320\265\320\265 \320\274\320\276\320\266\320\275\320\276 \321\203\320\272\320\260\320\267\320\260\321\202\321\214 \321\201\320\274"
                         "\320\265\321\211\320\265\320\275\320\270\321\217, \321\200\320\265\320\267\321\203\320\273\321\214\321\202\320\260\321\202 \320\274\320\263\320\275\320\276\320\262\320\265\320\275\320\275\320\276 \320\276\321\202\320\276\320\261\321\200\320\260\320\267\320\270\321\202\321\214\321\201\321\217 \320\262 \321\201\320\277\320\265\321\206\320\270\320\260\320\273\321\214\320\275\320\276\320\274 \320\276\320\272\320\275\320\265.</p><p>\320\236\320\261\321\211\320\265\320\265 \321\201\320\274\320\265\321\211\320\265\320\275\320\270\320\265 \320\264\320\276\320\261\320\260\320\262\320\273\321\217\320\265\321\202\321\201\321\217 \321\201\321\200\320\260\320\267\321\203 \320\272\320\276 \320\262\321\201\320\265\320\274 \321\204\320\260\320\271\320\273\320\260\320\274, \320\261\321\203\320\264\321\214\321\202\320\265 \320\262\320\275\320\270\320\274\320\260\321\202\320\265\320\273\321\214\320\275\321\213. </p><p>\320\237\320\276\321\201\320\273\320\265 \321\203\321\201\321\202\320\260\320\275\320\276\320\262\320\272\320\270"
                         "/\320\277\320\276\320\264\320\263\320\276\320\275\320\272\320\270 \320\262\321\201\320\265\321\205 \320\277\320\260\321\200\320\260\320\274\320\265\321\202\321\200\320\276\320\262, \321\203\320\272\320\260\320\267\321\213\320\262\320\260\320\265\320\274 \320\264\320\273\320\270\321\202\320\265\320\273\321\214\320\275\320\276\321\201\321\202\321\214 \320\270 \320\272\320\260\321\207\320\265\321\201\321\202\320\262\320\276 \320\262\320\270\320\264\320\265\320\276, \320\270 \320\275\320\260\320\266\320\270\320\274\320\260\320\265\320\274 \320\272\320\275\320\276\320\277\320\272\321\203 &quot;\320\241\320\276\321\205\321\200\320\260\320\275\320\270\321\202\321\214&quot;. \320\222\321\213\320\261\320\270\321\200\320\260\320\265\320\274 \320\262 \320\272\320\260\320\272\321\203\321\216 \320\277\320\260\320\277\320\272\321\203 \320\270 \321\201 \320\272\320\260\320\272\320\270\320\274 \320\270\320\274\320\265\320\275\320\265\320\274 \321\201\320\276\321\205\321\200\320\260\320\275\321\217\321\202\321\214, \320\266\320"
                         "\274\320\265\320\274 \320\276\320\272\320\265\320\271, \320\265\321\201\320\273\320\270 \320\275\320\265\321\202 \320\276\321\210\320\270\320\261\320\276\320\272 - \320\266\320\264\320\265\320\274, \320\265\321\201\320\273\320\270 \320\265\321\201\321\202\321\214 - \320\270\321\201\320\277\321\200\320\260\320\262\320\273\321\217\320\265\320\274 \320\270 \320\277\320\276\320\262\321\202\320\276\321\200\321\217\320\265\320\274 \320\267\320\260\320\275\320\276\320\263\320\276.</p><p>\320\222\320\262\320\270\320\264\321\203 \320\261\320\276\320\273\321\214\321\210\320\270\321\205 \321\200\320\260\320\267\320\274\320\265\321\200\320\276\320\262 \320\270\321\202\320\276\320\263\320\276\320\262\320\276\320\263\320\276 \321\204\320\260\320\271\320\273\320\260(\320\276\320\272\320\276\320\273\320\276 1\320\223\320\221/\320\274\320\270\320\275\321\203\321\202\320\260), \320\265\321\201\321\202\321\214 \320\262\320\276\320\267\320\274\320\276\320\266\320\275\320\276\321\201\321\202\321\214 \321\201\320\266\320\260\321\202"
                         "\321\214 \320\265\320\263\320\276 \320\262 3-4 \321\200\320\260\320\267\320\260. \320\222\321\213\320\261\320\270\321\200\320\260\320\265\320\274 \321\201\320\276\320\276\321\202\320\262\320\265\321\202\321\201\321\202\320\262\321\203\321\216\321\211\321\203\321\216 \321\204\321\203\320\275\320\272\321\206\320\270\321\216, \320\262\321\213\320\261\320\270\321\200\320\260\320\265\320\274 \321\204\320\260\320\271\320\273 \320\270 \321\203\320\272\320\260\320\267\321\213\320\262\320\260\320\265\320\274 \321\204\320\260\320\271\320\273 \320\275\320\260\320\267\320\275\320\260\321\207\320\265\320\275\320\270\321\217.</p><p>\320\225\321\201\320\273\320\270 \320\262\321\201\320\265 \320\277\320\273\320\276\321\205\320\276, \320\267\320\262\320\276\320\275\320\270\321\202\320\265 +79141541132.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
-        pushButton_6->setText(QApplication::translate("MainWindow", "?", 0));
-        groupBox_5->setTitle(QApplication::translate("MainWindow", "\320\230\321\202\320\276\320\263\320\276\320\262\321\213\320\271 \321\204\320\260\320\271\320\273", 0));
-        label_6->setText(QApplication::translate("MainWindow", "\320\232\320\260\321\207\320\265\321\201\321\202\320\262\320\276:", 0));
-#ifndef QT_NO_TOOLTIP
-        radioButton_2->setToolTip(QApplication::translate("MainWindow", "\320\236\320\261\321\213\321\207\320\275\320\276\320\265 \320\272\320\260\321\207\320\265\321\201\321\202\320\262\320\276 \320\262\321\205\320\276\320\264\320\275\320\276\320\263\320\276 \320\262\320\270\320\264\320\265\320\276", 0));
-#endif // QT_NO_TOOLTIP
-        radioButton_2->setText(QApplication::translate("MainWindow", "\320\222\321\213\321\201\320\276\320\272\320\276\320\265", 0));
-#ifndef QT_NO_TOOLTIP
-        radioButton->setToolTip(QApplication::translate("MainWindow", "\320\222 4 \321\200\320\260\320\267\320\260 \321\205\321\203\320\266\320\265 \320\276\320\261\321\213\321\207\320\275\320\276\320\263\320\276", 0));
-#endif // QT_NO_TOOLTIP
-        radioButton->setText(QApplication::translate("MainWindow", "\320\235\320\270\320\267\320\272\320\276\320\265", 0));
-        label_10->setText(QApplication::translate("MainWindow", "\320\224\320\273\320\270\321\202\320\265\320\273\321\214\320\275\320\276\321\201\321\202\321\214:                            \320\272\320\260\320\264\321\200", 0));
-#ifndef QT_NO_TOOLTIP
-        lineEdit_9->setToolTip(QApplication::translate("MainWindow", "\320\235\320\265 \321\203\320\272\320\260\320\267\321\213\320\262\320\260\320\271\321\202\320\265 \320\270\320\273\320\270 0 - \320\264\320\273\321\217 \320\274\320\260\320\272\321\201\320\270\320\274\320\260\320\273\321\214\320\275\320\276\320\271 \320\264\320\273\320\270\321\202\320\265\320\273\321\214\320\275\320\276\321\201\321\202\320\270", 0));
-#endif // QT_NO_TOOLTIP
-        lineEdit_9->setText(QApplication::translate("MainWindow", "0", 0));
-        pushButton_5->setText(QApplication::translate("MainWindow", "\320\241\320\276\320\267\320\264\320\260\321\202\321\214", 0));
-#ifndef QT_NO_TOOLTIP
-        checkBox->setToolTip(QApplication::translate("MainWindow", "\320\237\320\276\321\201\320\273\320\265 \321\201\320\276\320\267\320\264\320\260\320\275\320\270\320\265 \321\204\320\260\320\271\320\273 \320\261\321\203\320\264\320\265\321\202 \320\260\320\262\321\202\320\276\320\274\320\260\321\202\320\270\321\207\320\265\321\201\320\272\320\270 \321\201\320\266\320\260\321\202.", 0));
-#endif // QT_NO_TOOLTIP
-        checkBox->setText(QApplication::translate("MainWindow", "\320\241\320\266\320\260\321\202\321\214: ", 0));
-#ifndef QT_NO_TOOLTIP
-        pushButton_10->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>\320\236\321\202\320\274\320\265\320\275\320\270\321\202\321\214 \321\201\320\276\320\267\320\264\320\260\320\275\320\270\320\265</p></body></html>", 0));
-#endif // QT_NO_TOOLTIP
-        pushButton_10->setText(QApplication::translate("MainWindow", "\321\205", 0));
-#ifndef QT_NO_TOOLTIP
-        checkBox_2->setToolTip(QString());
-#endif // QT_NO_TOOLTIP
-        checkBox_2->setText(QApplication::translate("MainWindow", "\320\221\320\265\320\267 \320\267\320\262\321\203\320\272\320\260:", 0));
-        pushButton_21->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\265\320\264\320\277\321\200\320\276\321\201\320\274\320\276\321\202\321\200", 0));
+        helpButton->setText(QApplication::translate("MainWindow", "?", 0));
         pushButton_8->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\270\320\274\320\265\320\275\320\270\321\202\321\214 \321\201\320\274\320\265\321\211\320\265\320\275\320\270\321\217", 0));
-        groupBox_6->setTitle(QApplication::translate("MainWindow", "\320\241\320\266\320\260\321\202\321\214", 0));
-        pushButton_4->setText(QApplication::translate("MainWindow", "\320\236\321\202\320\272\321\200\321\213\321\202\321\214", 0));
-#ifndef QT_NO_TOOLTIP
-        pushButton_9->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>\320\236\321\202\320\274\320\265\320\275\320\270\321\202\321\214 \321\201\320\266\320\260\321\202\320\270\320\265</p></body></html>", 0));
-#endif // QT_NO_TOOLTIP
-        pushButton_9->setText(QApplication::translate("MainWindow", "\321\205", 0));
-        cstatus->setText(QString());
-        status->setText(QString());
+        statusLabel->setText(QString());
         pushButton_15->setText(QApplication::translate("MainWindow", "+", 0));
         pushButton_20->setText(QApplication::translate("MainWindow", "-", 0));
+        settingGroupBox->setTitle(QApplication::translate("MainWindow", "\320\235\320\260\321\201\321\202\321\200\320\276\320\271\320\272\320\270", 0));
+#ifndef QT_NO_TOOLTIP
+        enableSoundCheckBox->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        enableSoundCheckBox->setText(QApplication::translate("MainWindow", "\320\222\320\272\320\273\321\216\321\207\320\270\321\202\321\214 \320\267\320\262\321\203\320\272:", 0));
+#ifndef QT_NO_TOOLTIP
+        autoCompessCheckBox->setToolTip(QApplication::translate("MainWindow", "\320\237\320\276\321\201\320\273\320\265 \321\201\320\276\320\267\320\264\320\260\320\275\320\270\320\265 \321\204\320\260\320\271\320\273 \320\261\321\203\320\264\320\265\321\202 \320\260\320\262\321\202\320\276\320\274\320\260\321\202\320\270\321\207\320\265\321\201\320\272\320\270 \321\201\320\266\320\260\321\202.", 0));
+#endif // QT_NO_TOOLTIP
+        autoCompessCheckBox->setText(QApplication::translate("MainWindow", "\320\241\320\266\320\260\321\202\321\214 \320\277\320\276\321\201\320\273\320\265 \321\201\320\276\320\267\320\264\320\260\320\275\320\270\321\217: ", 0));
+#ifndef QT_NO_TOOLTIP
+        autoSelectCodecCheckBox->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        autoSelectCodecCheckBox->setText(QApplication::translate("MainWindow", "\320\220\320\262\321\202\320\276\320\274\320\260\321\202\320\270\321\207\320\265\321\201\320\272\320\270\320\271 \320\262\321\213\320\261\320\276\321\200 \320\272\320\276\320\264\320\265\320\272\320\260:", 0));
+#ifndef QT_NO_TOOLTIP
+        addFiftyFrameCheckBox->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        addFiftyFrameCheckBox->setText(QApplication::translate("MainWindow", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 \320\277\321\217\321\202\321\213\320\271 \320\272\320\260\320\264\321\200", 0));
+        splitValueTextMax->setText(QApplication::translate("MainWindow", "50%", 0));
+        splitValueTextMin->setText(QApplication::translate("MainWindow", "0%", 0));
+        splitValueLabel->setText(QApplication::translate("MainWindow", "\320\236\320\261\321\212\320\265\320\264\320\270\320\275\320\270\321\202\321\214 \320\272\321\200\320\260\321\217( % \320\276\321\202 \321\210\320\270\321\200\320\270\320\275\321\213 \320\272\320\260\320\264\321\200\320\260 ):", 0));
+        qualityLabel->setText(QApplication::translate("MainWindow", "\320\232\320\260\321\207\320\265\321\201\321\202\320\262\320\276:", 0));
+#ifndef QT_NO_TOOLTIP
+        lowQualityRadioButton->setToolTip(QApplication::translate("MainWindow", "\320\222 4 \321\200\320\260\320\267\320\260 \321\205\321\203\320\266\320\265 \320\276\320\261\321\213\321\207\320\275\320\276\320\263\320\276", 0));
+#endif // QT_NO_TOOLTIP
+        lowQualityRadioButton->setText(QApplication::translate("MainWindow", "\320\235\320\270\320\267\320\272\320\276\320\265", 0));
+#ifndef QT_NO_TOOLTIP
+        highQualityRadioButton->setToolTip(QApplication::translate("MainWindow", "\320\236\320\261\321\213\321\207\320\275\320\276\320\265 \320\272\320\260\321\207\320\265\321\201\321\202\320\262\320\276 \320\262\321\205\320\276\320\264\320\275\320\276\320\263\320\276 \320\262\320\270\320\264\320\265\320\276", 0));
+#endif // QT_NO_TOOLTIP
+        highQualityRadioButton->setText(QApplication::translate("MainWindow", "\320\222\321\213\321\201\320\276\320\272\320\276\320\265", 0));
+#ifndef QT_NO_TOOLTIP
+        mediumQualityRadioButton->setToolTip(QApplication::translate("MainWindow", "\320\222 2 \321\200\320\260\320\267\320\260 \321\205\321\203\320\266\320\265 \320\276\320\261\321\213\321\207\320\275\320\276\320\263\320\276", 0));
+#endif // QT_NO_TOOLTIP
+        mediumQualityRadioButton->setText(QApplication::translate("MainWindow", "\320\241\321\200\320\265\320\264\320\275\320\265\320\265", 0));
+        previewButton->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\265\320\264\320\277\321\200\320\276\321\201\320\274\320\276\321\202\321\200", 0));
+#ifndef QT_NO_TOOLTIP
+        frameCountLineEdit->setToolTip(QApplication::translate("MainWindow", "\320\235\320\265 \321\203\320\272\320\260\320\267\321\213\320\262\320\260\320\271\321\202\320\265 \320\270\320\273\320\270 0 - \320\264\320\273\321\217 \320\274\320\260\320\272\321\201\320\270\320\274\320\260\320\273\321\214\320\275\320\276\320\271 \320\264\320\273\320\270\321\202\320\265\320\273\321\214\320\275\320\276\321\201\321\202\320\270", 0));
+#endif // QT_NO_TOOLTIP
+        frameCountLineEdit->setText(QApplication::translate("MainWindow", "0", 0));
+        frameCountLabel->setText(QApplication::translate("MainWindow", "\320\224\320\273\320\270\321\202\320\265\320\273\321\214\320\275\320\276\321\201\321\202\321\214(\320\272\320\260\320\264\321\200\321\213):", 0));
+        createButton->setText(QApplication::translate("MainWindow", "\320\241\320\276\320\267\320\264\320\260\321\202\321\214 \321\204\320\260\320\271\320\273", 0));
+        compressButton->setText(QApplication::translate("MainWindow", "\320\241\320\266\320\260\321\202\321\214 \321\204\320\260\320\271\320\273", 0));
+        methodLabel->setText(QApplication::translate("MainWindow", "\320\234\320\265\321\202\320\276\320\264 \320\277\320\260\320\275\320\276\321\200\320\260\320\274\320\270\320\267\320\260\321\206\320\270\320\270:", 0));
+#ifndef QT_NO_TOOLTIP
+        methodMeanRadioButton->setToolTip(QApplication::translate("MainWindow", "\320\237\321\200\320\276\321\201\321\202\320\265\320\271\321\210\320\270\320\271 \321\201\320\277\320\276\321\201\320\276\320\261. \320\241\320\260\320\274\321\213\320\271 \320\261\321\213\321\201\321\202\321\200\321\213\320\271", 0));
+#endif // QT_NO_TOOLTIP
+        methodMeanRadioButton->setText(QApplication::translate("MainWindow", "\320\237\320\273\320\260\320\262\320\275\320\276\320\265 \321\201\321\200\320\265\320\264\320\275\320\265\320\265", 0));
+#ifndef QT_NO_TOOLTIP
+        stopButton->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>\320\236\321\202\320\274\320\265\320\275\320\270\321\202\321\214 \321\201\320\266\320\260\321\202\320\270\320\265</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        stopButton->setText(QApplication::translate("MainWindow", "\321\205", 0));
     } // retranslateUi
 
 };

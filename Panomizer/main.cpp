@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QIcon>
 #include "window.h"
 
@@ -16,8 +17,10 @@ int main( int argc, char *argv[] ) {
 	a.setWindowIcon( QIcon( ":/Icons/Resources/H16.png" ) );
 
 	Window window;
-	window.move( 600, 400 );
+	auto desktopSize = QApplication::desktop()->size();
+	window.move( desktopSize.width() / 2 - window.width() / 2, desktopSize.height() / 2 - window.height() / 2 );
 	window.show();
 	window.setFixedSize( window.size() );
+
 	return a.exec();
 }

@@ -1,19 +1,13 @@
 #pragma once
 
 #include <QMainWindow>
-#include "ui_window.h"
-#include "panomizer.h"
-#include <QThread>
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QSettings>
-#include <QProcess>
 #include <QSharedPointer>
 #include <QTimer>
-#include <QVector>
 #include <QList>
-
-typedef QSharedPointer<QWidget> QWidgetPtr;
+#include <QProcess>
+#include <QString>
+#include "ui_window.h"
+#include "panomizer.h"
 
 class Window : public QMainWindow {
 	Q_OBJECT
@@ -24,8 +18,6 @@ public:
 
 private:
 	Ui::MainWindow ui;
-	QWidgetPtr previewWidget;
-	QLabel* previewLabel;
 	QTimer timer;
 	QString compressName, sound1, sound2, sound3, sound4;
 	qint32 numCompletedAudio;
@@ -35,6 +27,7 @@ private:
 	int		get( QLineEdit & lineEdit );
 	void	readSettings();
 	QString animateString( QString s );
+	int		screenWidth;
 
 	void	getSound( double maxFPS );
 	void	init();
@@ -55,27 +48,57 @@ private:
 	void	pushButton18Clicked();
 	void	pushButton19Clicked();
 	void	pushButton20Clicked();
+	//void	deleteFile();
+	//void	newFile();
 	void	saveFile();
 	void	preview();
 	void	setPercent( double );
-	void	setImage( QPixmap );
+	void	setFrameCount( double );
 	void	setError( QString );
-	void	setStatus( QString e );
+	void	afterCreated();
+	void	setStatus( const QString & text );
+	void	sendSplit();
 	void	compressButton();
+	void	enableButtons();
+	void	disableButtons();
+	void	disableAll();
+	void	enableAll();
+	void	removeTempFiles();
+	void	reset();
+	void	stopButton();
 	void	compress( QString in, QString out );
 	void	convert( QString in, QString out );
 	void	compressState( QProcess::ProcessState s );
 	void	convertState( QProcess::ProcessState s );
-	void	audioState( QProcess::ProcessState s );
-	void	animate();
-	QString getAudio( QString in, QString out, double offset = 0.0, double time = 0.0 );
-signals:
-	void initNames( QList< QString > names );
-	void initOffsets( int globalOffset, QList< int > offsets );
 
-	void createVideo( QString filename, double frameCount, bool highResolution, bool preview );
-	void stop();
-	void stopCreating();
-	void kill();
-	void getFPS();
+	auto	getFrameCount() -> int;
+	auto	getSplitValue() -> float;
+	auto	isHighQuality() -> bool;
+	auto	isAutoSelectCodec() -> bool;
+	auto	isAddFiftyFrame() -> bool;
+	auto	isAutoCompress() -> bool;
+	auto	isSoundEnabled() -> bool;
+
+	void	addFiftyFrameState( int state );
+	void	splitState( int state );
+	void	qualityState( bool checked );
+
+	void	help();
+	void	create( const QString & filename );
+	void	audioState( QProcess::ProcessState state );
+	void	animate();
+	auto	getAudio( QString in, QString out, double offset = 0.0, double time = 0.0 ) -> QString;
+signals:
+	void	initNames( QList< QString > names );
+	void	initOffsets( int globalOffset, QList< int > offsets );
+
+	void	setAddFiftyFrame( bool newFiftyFrame );
+	void	setSplit( float newSplit );
+	void	setQuality( Quality newQuality );
+
+	void	createVideo( QString filename, double frameCount, bool autoFindCodec );
+	void	stop();
+	void	stopCreating();
+	void	kill();
+	void	getFPS();
 };

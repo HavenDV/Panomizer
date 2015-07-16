@@ -1,22 +1,34 @@
 #include "videoreader.h"
 
-VideoReader::VideoReader() : 
+VideoReader::VideoReader( const std::string & filename ) :
+	cv::VideoCapture( filename ),
 	mOffset{ 0.0 }, mGlobalOffset{ 0.0 }, mNeedFPS{ 0.0 },
 	mCurrentDelta{ 0.0 }, mCurrentOffset{ 0.0 },
-	mFilename{ "" }, mCurrentFrame{ 0.0 } {
-}
-
-VideoReader::VideoReader( const std::string & filename ) : cv::VideoCapture( filename ) {
-	mFilename = filename;
-	VideoReader::VideoReader();
+	mFilename{ filename }, mCurrentFrame{ 0.0 } {
 }
 
 auto	VideoReader::getSyncOffset( double fps, double maxFPS, double offset ) -> double {
-	return ( 2 * fps - maxFPS ) * offset * ( maxFPS - fps) / ( fps * fps );
+	return ( 2 * fps - maxFPS ) * offset * ( maxFPS - fps ) / ( fps * fps );
+}
+
+void	VideoReader::setOffset( int offset ) {
+	mOffset = offset;
 }
 
 void	VideoReader::setGlobalOffset( double globalOffset ) {
 	mGlobalOffset = globalOffset;
+}
+
+void	VideoReader::setNeedFPS( double needFPS ) {
+	mNeedFPS = needFPS;
+	//if ( needFPS - fps() > 0.0 ) {
+	//emit error( QString( u8"FPS файла %1 отстает от максимального FPS(%2, %3)." ).arg( i + 1 ).arg( currentFPS ).arg( maxFPS ) );
+	//}
+	reset();
+}
+
+void	VideoReader::setCurrentOffset( double currentOffset ) {
+	mCurrentOffset = currentOffset;
 }
 
 void	VideoReader::reset() {
@@ -41,6 +53,20 @@ auto	VideoReader::frameCount() -> double {
 	return get( CV_CAP_PROP_FRAME_COUNT );
 }
 
+auto	VideoReader::codec() -> int {
+	return static_cast< int >( get( CV_CAP_PROP_FOURCC ) );
+}
+
+auto	VideoReader::codecName() -> std::string {
+	auto ex = codec();
+	char name[ 5 ];
+	for ( auto i = 0U; i < 4U; ++i ) {
+		name[ i ] = static_cast< char >( ( ex & ( 0XFF << i * 8U ) ) >> i * 8U );
+	}
+	name[ 4 ] = '\0';
+	return name;
+}
+
 auto	VideoReader::frameSize() -> double {
 	return frameCount() - mOffset - mGlobalOffset;
 }
@@ -61,26 +87,10 @@ auto	VideoReader::currentOffset() -> const double {
 	return mCurrentOffset;
 }
 
-void	VideoReader::setOffset( int offset ) {
-	mOffset = offset;
-}
-
-void	VideoReader::setNeedFPS( double needFPS ) {
-	mNeedFPS = needFPS;
-	if ( needFPS - fps() > 0.0 ) {
-		//emit error( QString( u8"FPS файла %1 отстает от максимального FPS(%2, %3)." ).arg( i + 1 ).arg( currentFPS ).arg( maxFPS ) );
-	}
-	reset();
-}
-
-void	VideoReader::setCurrentOffset( double currentOffset ) {
-	mCurrentOffset = currentOffset;
-}
-
 auto	VideoReader::operator >> ( cv::Mat & mat ) -> VideoReader & {
 	mCurrentDelta = getSyncOffset( fps(), mNeedFPS, mCurrentFrame - 3.0 * mCurrentOffset );
 	if ( mCurrentDelta >= mCurrentOffset + 1.0 ) {
-		mCurrentOffset += 1.0;
+		++mCurrentOffset;// += 1.0;
 		lastFrame.copyTo( mat );
 	}
 	else {

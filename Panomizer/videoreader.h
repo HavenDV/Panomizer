@@ -4,32 +4,26 @@
 class VideoReader : public cv::VideoCapture {
 
 public:
-	VideoReader();
-	VideoReader( const std::string & filename );
+	VideoReader( const std::string & filename = "" );
 
-	auto	getSyncOffset( double fps, double maxFPS, double offset ) -> double;
-
-	void	setGlobalOffset( double globalOffset );
-
-	void	reset();
-
-	auto	fps() -> double;
-
-	auto	frameCount() -> double;
-
-	auto	frameSize() -> double;
-
-	auto	filename() -> const std::string;
-
-	auto	offset() -> const int;
-	auto	currentOffset() -> const double;
-
-	auto	needFPS() -> const double;
+	static auto	getSyncOffset( double fps, double maxFPS, double offset ) -> double;
 
 	void	setOffset( int offset );
-	void	setNeedFPS( double deltaFPS );
+	void	setGlobalOffset( double globalOffset );
 	void	setCurrentOffset( double currentOffset );
+	void	setNeedFPS( double deltaFPS );
 
+	auto	fps() -> double;
+	auto	frameCount() -> double;
+	auto	codec() -> int;
+	auto	codecName()->std::string;
+	auto	frameSize() -> double;
+	auto	filename() -> const std::string;
+	auto	offset() -> const int;
+	auto	currentOffset() -> const double;
+	auto	needFPS() -> const double;
+
+	void	reset();
 	auto	operator >> ( cv::Mat & mat ) -> VideoReader &;
 
 private:
